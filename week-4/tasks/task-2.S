@@ -4,10 +4,13 @@
 .type main, %function
 main:
   nop
-  movs r3, 1
-  ldr r0, =main
-
+  ldr r0, =operation
 @ when it's all done, spin in an infinite loop
+
 loop:
   nop
   b loop
+
+.data
+operation:
+  movs r3, 1
