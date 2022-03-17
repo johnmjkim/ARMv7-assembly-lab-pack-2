@@ -3,11 +3,6 @@
 
 .type main, %function
 main:
-  b loop
-@ when it's all done, spin in an infinite loop
-
-loop:
-  nop
   @ load r1 with the base address of P0
   ldr r1, =0x50000000
 
@@ -44,4 +39,8 @@ loop:
 
   @ store the modified result back into P0 OUT
   str r2, [r1, 0x504]
+@ when it's all done, spin in an infinite loop
+
+loop:
+  nop
   b loop
