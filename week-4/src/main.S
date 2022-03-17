@@ -3,36 +3,78 @@
 
 .type main, %function
 main:
-  ldr r0, =0xcafe0000
-  ldr r1, =0xffff
+  @ LED Output setup
+  @ load r1 with the base address of P0
+  ldr r1, =0x50000000
 
-  @ orr instruction to make 0xcafe ffff
-  @ 0xcafe0000 OR 0xffff
-  orr r3, r0, r1
+  @ load r2 with the value of P0 DIR
+  @ (note the 0x514 offset from the P0 base address)
+  ldr r2, [r1, 0x514]
 
-  @ lsr instruction to make 0xcafe
-  @ shift right 4-bit
-  lsr r4, r0, 16
+  @ set bit 21 of this register by doing a logical or with 0b1 left-shifted by 21
+  @ think: why does this work?
+  mov r3, 0b1
+  lsl r3, r3, #21
+  orr r2, r2, r3
 
-  @ make r5 0xca00 0000
-  lsr r2, r0, 24
-  lsl r5, r2, 24
-  @ make r2 0xff 0000
-  lsr r2, r1, 8
-  lsl r2, r2, 16
-  @ orr instruction to make 0xcaff 0000
-  orr r5, r5, r2
+  @ set bit 28 of this register by doing a logical or with 0b1 left-shifted by 28
+  @ and then use or operation to set both 21 & 28
+  mov r4, 0b1
+  lsl r4, r4, #28
+  orr r2, r2, r4
 
-  @ make r6 0xc000 0000
-  lsr r6, r0, 28
-  lsl r6, r6, 28
-  @ make r2 0xfe 0000
-  lsl r2, r0, 8
-  lsr r2, r2, 8
-  @ orr instruction to make 0xc0fe 0000
-  orr r6, r6, r2
+  @ store the modified result back into P0 DIR
+  str r2, [r1, 0x514]
 
+  b lighton
 @ when it's all done, spin in an infinite loop
-loop:
+
+lighton:
   nop
-  b loop
+  @ load r1 with the base address of P0
+  ldr r1, =0x50000000
+
+  @ load r2 with the value of P0 OUT
+  @ (note the 0x504 offset from the P0 base address)
+  ldr r2, [r1, 0x504]
+
+  @ set bit 21 of this register by doing a logical or with 0b1 left-shifted by 21
+  mov r3, 0b1
+  lsl r3, r3, #21
+  orr r2, r2, r3
+
+  @ store the modified result back into P0 OUT
+  str r2, [r1, 0x504]
+  ldr r5, =0x500000
+  b delayandlightoff
+
+lightoff:
+  nop
+  @ load r1 with the base address of P0
+  ldr r1, =0x50000000
+
+  @ load r2 with the value of P0 OUT
+  @ (note the 0x504 offset from the P0 base address)
+  ldr r2, [r1, 0x504]
+
+  @ set bit 21 of this register by 0
+  mov r2, 0
+
+  @ store the modified result back into P0 OUT
+  str r2, [r1, 0x504]
+  ldr r5, =0x500000
+  b delayandlighton
+
+delayandlightoff:
+  nop
+  subs r5, r5, 1
+  bmi lightoff
+
+  b delayandlightoff
+
+delayandlighton:
+  nop
+  subs r5, r5, 1
+  bmi lighton
+
+  b delayandlighton
