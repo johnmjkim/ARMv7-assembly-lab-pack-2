@@ -159,21 +159,19 @@ led_col:
   @ COL4 uses base address of P1
   .word 28, 11, 31, 5, 30
 
-@ .type led_onoff, %function
-@ @ args:
-@ @ r7: ROW
-@ @ r8: COL
-@ led_onoff:
-@   str lr, [sp]
-@   bl set_dirROW
-@   bl set_dirCOL
-@   bl on_row
-@   bl off_row
-@   bl clear_dirROW
-@   bl clear_dirCOL4
-@   ldr lr, [sp]
-@   bx lr
-@ .size led_onoff, .-led_onoff
+.type led_onoff, %function
+@ args:
+@ r7: ROW
+@ r8: COL
+led_onoff:
+  bl set_dirROW
+  bl set_dirCOL
+  bl on_row
+  bl off_row
+  bl clear_dirROW
+  bl clear_dirCOL4
+  bx lr
+.size led_onoff, .-led_onoff
 
 .type set_dirROW, %function
 set_dirROW:
