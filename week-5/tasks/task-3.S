@@ -3,85 +3,68 @@
 
 .type main, %function
 main:
-  @ Setup topleft LED : ROW1, COL1
-  @ Light on-off the LED
-  @ Unset topleft LED : ROW1, COL1
-  bl set_topleft
+  @ Set r7 : row, r8 : col
+  @ ROW1-5, COL1-5 input number from 0, 4, 8, 12, 16
+  b light_onoff
 
-  bl on_row1
-  ldr r0, =0x500000
-  bl time_delay
-  bl off_row1
-  ldr r0, =0x500000
-  bl time_delay
+light_onoff:
+  mov r7, 0
+  mov r8, 0
+  bl set_led
+  bl on_row
+  bl off_row
+  bl unset_led
 
-  bl unset_topleft
+  mov r7, 4
+  mov r8, 0
+  bl set_led
+  bl on_row
+  bl off_row
+  bl unset_led
 
-  @ Setup topleft LED : ROW1, COL5
-  @ Light on-off the LED
-  @ Unset topleft LED : ROW1, COL5
-  bl set_topright
+  mov r7, 8
+  mov r8, 0
+  bl set_led
+  bl on_row
+  bl off_row
+  bl unset_led
 
-  bl on_row1
-  ldr r0, =0x500000
-  bl time_delay
-  bl off_row1
-  ldr r0, =0x500000
-  bl time_delay
+  mov r7, 12
+  mov r8, 0
+  bl set_led
+  bl on_row
+  bl off_row
+  bl unset_led
 
-  bl unset_topright
+  mov r7, 16
+  mov r8, 0
+  bl set_led
+  bl on_row
+  bl off_row
+  bl unset_led
 
-  b main
+  mov r7, 4
+  mov r8, 4
+  bl set_led
+  bl on_row
+  bl off_row
+  bl unset_led
 
-  mov r6, 0
-  mov r7, 20
-  mov r8, 3
-  mov r9, 5
-  mov r12, 0
-  b count_loop
+  mov r7, 12
+  mov r8, 4
+  bl set_led
+  bl on_row
+  bl off_row
+  bl unset_led
 
-count_loop:
-  @ number divisable with 3
-  udiv r10, r6, r8
-  mls r11, r10, r8, r6
-  cmps r11, r12
-  str lr, [sp]
-  beq divisable3
-  ldr lr, [sp]
+  mov r7, 8
+  mov r8, 8
+  bl set_led
+  bl on_row
+  bl off_row
+  bl unset_led
 
-  @ nubmer divisable with 5
-  udiv r10, r6, r9
-  mls r11, r10, r9, r6
-  cmps r11, r12
-  str lr, [sp]
-  beq divisable5
-  ldr lr, [sp]
-
-  bl on_row1
-  ldr r0, =0x500000
-  bl time_delay
-  bl off_row1
-  ldr r0, =0x500000
-  bl time_delay
-
-  bl unset_topleft
-  bl unset_topright
-
-  add r6, r6, 1
-  subs r10, r7, r6
-  bpl count_loop
-  b loop
-
-loop:
-  b loop
-
-divisable3:
-  bl set_topleft
-  bx lr
-
-divisable5:
-  bl set_topright
-  bx lr
+  b light_onoff
 
 .data
 base_address:
@@ -106,131 +89,82 @@ led_col:
   @ COL4 uses base address of P1
   .word 28, 11, 31, 5, 30
 
-.type set_topleft, %function
-set_topleft:
+.type set_led, %function
+set_led:
   @ Set base address of P0, 0x50000000
   ldr r0, =base_address
   ldr r1, [r0]
   @ Set offset as DIR, 0x514
   ldr r0, =offset
   ldr r2, [r0, 4]
-  @ Set led row ROW1, 21
+  @ Set led row ROW
   ldr r0, =led_row
-  ldr r3, [r0]
+  ldr r3, [r0, r7]
   str lr, [sp]
   bl set_bit
   ldr lr, [sp]
 
-  @ Set led col COL1, 28
+  @ Set led col COL
   ldr r0, =led_col
-  ldr r3, [r0]
+  ldr r3, [r0, r8]
   str lr, [sp]
   bl set_bit
   ldr lr, [sp]
   bx lr
-.size set_topleft, .-set_topleft
+.size set_led, .-set_led
 
-.type unset_topleft, %function
-unset_topleft:
+.type unset_led, %function
+unset_led:
   @ Set base address of P0, 0x50000000
   ldr r0, =base_address
   ldr r1, [r0]
   @ Set offset as DIR, 0x514
   ldr r0, =offset
   ldr r2, [r0, 4]
-  @ Set led row ROW1, 21
+  @ Clear led row ROW
   ldr r0, =led_row
-  ldr r3, [r0]
+  ldr r3, [r0, r7]
   str lr, [sp]
   bl clear_bit
   ldr lr, [sp]
 
-  @ Set led col COL1, 28
+  @ Clear led col COL
   ldr r0, =led_col
-  ldr r3, [r0]
+  ldr r3, [r0, r8]
   str lr, [sp]
   bl clear_bit
   ldr lr, [sp]
   bx lr
-.size unset_topleft, .-unset_topleft
 
-.type set_topright, %function
-set_topright:
-  @ Set base address of P0, 0x50000000
-  ldr r0, =base_address
-  ldr r1, [r0]
-  @ Set offset as DIR, 0x514
-  ldr r0, =offset
-  ldr r2, [r0, 4]
-  @ Set led row ROW1, 21
-  ldr r0, =led_row
-  ldr r3, [r0]
-  @ set bit to set
-  str lr, [sp]
-  bl set_bit
-  ldr lr, [sp]
-
-  @ Set led col COL5, 30
-  ldr r0, =led_col
-  ldr r3, [r0, 16]
-  @ set bit to set
-  str lr, [sp]
-  bl set_bit
-  ldr lr, [sp]
-  bx lr
-.size set_topright, .-set_topright
-
-.type unset_topright, %function
-unset_topright:
-  @ Set base address of P0, 0x50000000
-  ldr r0, =base_address
-  ldr r1, [r0]
-  @ Set offset as DIR, 0x514
-  ldr r0, =offset
-  ldr r2, [r0, 4]
-  @ Set led row ROW1, 21
-  ldr r0, =led_row
-  ldr r3, [r0]
-  @ clear bit to unset
-  str lr, [sp]
-  bl clear_bit
-  ldr lr, [sp]
-
-  @ Set led col COL5, 30
-  ldr r0, =led_col
-  ldr r3, [r0, 16]
-  @ clear bit to unset
-  str lr, [sp]
-  bl clear_bit
-  ldr lr, [sp]
-  bx lr
-.size unset_topright, .-unset_topright
-
-.type on_row1, %function
-on_row1:
-@ Offet of OUT, 0x504
+.type on_row, %function
+on_row:
+  @ Offet of OUT, 0x504
   ldr r0, =offset
   ldr r2, [r0]
-  
+  @ Set led row ROW
   ldr r0, =led_row
-  ldr r3, [r0]
+  ldr r3, [r0, r7]
+  @ Set led bit to OUTPUT
   str lr, [sp]
   bl set_bit
   ldr lr, [sp]
   bx lr
-.size on_row1, .-on_row1
+.size on_row, .-on_row
 
-.type off_row1, %function
-off_row1:
+.type off_row, %function
+off_row:
+  @ Offet of OUT, 0x504
   ldr r0, =offset
   ldr r2, [r0]
+  @ Set led row ROW
   ldr r0, =led_row
-  ldr r3, [r0]
+  ldr r3, [r0, r7]
+  @ Clear led bit to OUTPUT
   str lr, [sp]
   bl clear_bit
   ldr lr, [sp]
   bx lr
-.size off_row1, .-off_row1
+.size off_row, .-off_row
 
 .type set_bit, %function
 @ args:
