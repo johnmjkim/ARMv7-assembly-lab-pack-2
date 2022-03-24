@@ -3,9 +3,6 @@
 
 .type main, %function
 main:
-  @ mov r0, 3
-  @ mov r1, 2
-  @ bl sum_x_y
 
   ldr r1, =0x50000000
   mov r2, 0x514
@@ -21,15 +18,6 @@ main:
 
   mov r3, #21
   bl clear_bit
-
-  b main
-@ when it's all done, spin in an infinite loop
-
-@ .type sum_x_y, %function
-@ sum_x_y:
-@   add r0, r1
-@   bx lr
-@   .size sum_x_y, .-sum_x_y
 
 .type set_bit, %function
 @ args:

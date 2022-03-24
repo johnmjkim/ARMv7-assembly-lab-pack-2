@@ -183,10 +183,13 @@ unset_topright:
 
 .type on_row1, %function
 on_row1:
+  @ Offet of OUT, 0x504
   ldr r0, =offset
   ldr r2, [r0]
+  @ Set led row ROW1, 21
   ldr r0, =led_row
   ldr r3, [r0]
+  @ Set led bit to OUTPUT
   str lr, [sp]
   bl set_bit
   ldr lr, [sp]
@@ -195,10 +198,13 @@ on_row1:
 
 .type off_row1, %function
 off_row1:
+  @ Offet of OUT, 0x504
   ldr r0, =offset
   ldr r2, [r0]
+  @ Set led row ROW1, 21
   ldr r0, =led_row
   ldr r3, [r0]
+  @ Clear led bit to OUTPUT
   str lr, [sp]
   bl clear_bit
   ldr lr, [sp]
