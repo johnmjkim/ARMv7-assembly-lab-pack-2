@@ -5,26 +5,18 @@
 main:
   @ Set grades to mark : 15, 99, 70, 3
   mov r0, 0
-  ldr r1, =test_grades
-  ldr r2, [r1, r0]
   @ Convert grades to mark : 15 -> 0xF
   bl grade_from_mark
 
   mov r0, 4
-  ldr r1, =test_grades 
-  ldr r2, [r1, r0]
   @ Convert grades to mark : 99 -> 0xA
   bl grade_from_mark
 
   mov r0, 8
-  ldr r1, =test_grades
-  ldr r2, [r1, r0]
   @ Convert grades to mark : 70 -> 0xC
   bl grade_from_mark
 
   mov r0, 12
-  ldr r1, =test_grades
-  ldr r2, [r1, r0]
   @ Convert grades to mark : 3 -> 0xF
   bl grade_from_mark
 
@@ -40,6 +32,8 @@ end:
 @ r2, numerical mark
 @ result: r0
 grade_from_mark:
+  ldr r1, =test_grades
+  ldr r2, [r1, r0]
   subs r1, r2, #50
   bpl notF 
   mov r0, 0xF

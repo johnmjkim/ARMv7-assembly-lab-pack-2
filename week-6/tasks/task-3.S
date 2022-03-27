@@ -5,32 +5,14 @@
 main:
   @ Calculate grade of student s2
   mov r0, 0
-  ldr r1, =test_ass1_grades
-  ldr r2, [r1, r0]
-  ldr r1, =test_ass2_grades
-  ldr r3, [r1, r0]
-  ldr r1, =test_finalexam_grades
-  ldr r4, [r1, r0]
   bl calculate_grade @ Result is F in r0
 
   @ Calculate grade of student s3
   mov r0, 4
-  ldr r1, =test_ass1_grades
-  ldr r2, [r1, r0]
-  ldr r1, =test_ass2_grades
-  ldr r3, [r1, r0]
-  ldr r1, =test_finalexam_grades
-  ldr r4, [r1, r0]
   bl calculate_grade @ Result is C in r0
 
   @ Calculate grade of student s4
   mov r0, 8
-  ldr r1, =test_ass1_grades
-  ldr r2, [r1, r0]
-  ldr r1, =test_ass2_grades
-  ldr r3, [r1, r0]
-  ldr r1, =test_finalexam_grades
-  ldr r4, [r1, r0]
   bl calculate_grade @ Result is A in r0
 
   @ go to the end loop
@@ -47,6 +29,12 @@ end:
 @ r4, final exam mark, worth 50% mark
 @ result: r2
 calculate_grade:
+  ldr r1, =test_ass1_grades
+  ldr r2, [r1, r0]
+  ldr r1, =test_ass2_grades
+  ldr r3, [r1, r0]
+  ldr r1, =test_finalexam_grades
+  ldr r4, [r1, r0]
   @ Use nested function to call  
   str lr, [sp]
   bl calculate_total_mark
