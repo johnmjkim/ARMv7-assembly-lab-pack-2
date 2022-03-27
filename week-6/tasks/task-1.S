@@ -25,20 +25,20 @@ end:
 @ r2, final exam mark, worth 50% mark
 @ result: r0
 calculate_total_mark:
-  mov r4, 25
-  mul r0, r0, r4
-  mul r1, r1, r4
+  mov r3, 25
+  mul r0, r0, r3
+  mul r1, r1, r3
 
-  mov r4, 50
-  mul r2, r2, r4
+  mov r3, 50
+  mul r2, r2, r3
   
   add r0, r0, r1
   add r0, r0, r2
 
-  @ put the result in r0
-  mov r4, 100
-  div r0, r0, r4
+  @ @ put the result in r0
+  mov r3, 100
+  udiv r0, r0, r3
 
-  @ go back to where the function was called from
+  @ @ go back to where the function was called from
   bx lr
 .size calculate_total_mark, .-calculate_total_mark
