@@ -49,6 +49,7 @@ calculate_grade:
 @ r2, numerical mark
 @ result: r0
 grade_from_mark:
+  mov r2, r0
   subs r1, r2, #50
   bpl notF 
   mov r0, 0xF
@@ -102,7 +103,7 @@ calculate_total_mark:
 
   @ @ put the result in r0
   mov r5, 100
-  udiv r2, r2, r5
+  udiv r0, r2, r5
 
   @ @ go back to where the function was called from
   bx lr
