@@ -5,15 +5,15 @@
 main:
   @ Calculate grade of student s2
   mov r0, 0
-  bl calculate_grade @ Result is F in r0
+  bl calculate_grade @ Result is F in r0, 34 in r2
 
   @ Calculate grade of student s3
   mov r0, 4
-  bl calculate_grade @ Result is C in r0
+  bl calculate_grade @ Result is D in r0, 69 in r2
 
   @ Calculate grade of student s4
   mov r0, 8
-  bl calculate_grade @ Result is A in r0
+  bl calculate_grade @ Result is A in r0, 93 in r2
 
   @ go to the end loop
   b end
@@ -36,6 +36,7 @@ calculate_grade:
   ldr r3, [r1, r0]
   ldr r1, =test_finalexam_grades
   ldr r4, [r1, r0]
+  mov r5, r0
   @ Use nested function to call  
   @ bl calculate_total_mark
   push {lr}
@@ -116,6 +117,9 @@ calculate_total_mark:
 .size calculate_total_mark, .-calculate_total_mark
 
 .type calculate_grade_sa, %function
+@ r2, free memory
+@ r3, free memory
+@ r4, free memory
 @ r5, free memory
 @ r6, free memory
 # r7, free memory
@@ -124,6 +128,8 @@ calculate_grade_sa:
   push {lr}
   bl calculate_total_mark
   pop {lr}
+
+  mov r2, r5
 
   @ store teacher's mark on top of stack
   str r0, [sp, -4]!
@@ -159,13 +165,15 @@ calculate_grade_sa:
   udivgt r6, r6, r7
   cmp r5, r0
   
+  mov r0, r6
   bx lr
 .size calculate_grade_sa, .-calculate_grade_sa
 
 .type self_assessment, %function
 self_assessment:
   @ TODO: return self assessed mark in r0
-  mov r0, 58
+  ldr r3, =test_sa_grades
+  ldr r0, [r3, r2]
   bx lr
 .size self_assessment, .-self_assessment
 
@@ -177,4 +185,4 @@ test_ass2_grades:
 test_finalexam_grades:
   .word 41, 71, 91
 test_sa_grades:
-  .word 58, 68, 88
+  .word 60, 66, 96
