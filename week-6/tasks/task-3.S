@@ -112,11 +112,7 @@ calculate_total_mark:
 .data
 test_ass1_grades:
   .word 58, 68, 88
-
-.data
 test_ass2_grades:
   .word 51, 81, 91
-
-.data
 test_finalexam_grades:
   .word 41, 71, 91
